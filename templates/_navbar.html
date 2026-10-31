@@ -1,0 +1,12 @@
+{# Navbar markup. Its links, labels and brand come from site_config.json ("brand" and "nav"). #}
+<header class="topbar">
+  <div class="shell nav">
+    <a href="{{ page_url('home') }}" class="brand"><span class="logo">{{ site.brand.logo }}</span> {{ site.brand.name }} <b>{{ site.brand.accent }}</b></a>
+    <button type="button" class="nav-toggle" aria-label="Toggle navigation" onclick="document.querySelector('.links').classList.toggle('open')">☰</button>
+    <nav class="links">
+      {% for item in nav_items %}<a href="{{ item.href }}"{% if item.style == 'outline' %} class="outline"{% elif item.style == 'button' %} class="btn mini"{% endif %}>{{ item.label }}</a>
+      {% endfor %}
+    </nav>
+  </div>
+</header>
+{% if site_error %}<div class="shell"><div class="notice error" role="alert">{{ site_error }}</div></div>{% endif %}

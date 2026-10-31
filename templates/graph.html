@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="{{ site.meta.description }}">
+  <title>{{ site.pages.chart.title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% include '_navbar.html' %}
+
+  <main class="shell">
+    {% with msgs = get_flashed_messages(with_categories=true) %}{% for category, message in msgs %}
+    <div class="notice {{ category }}" role="alert">{{ message }}</div>
+    {% endfor %}{% endwith %}
+    {% set p = site.pages.chart %}
+
+    <section class="page-head"><h1>{{ p.heading }}</h1>
+      <p>{% if source == 'manual' %}{{ p.intro_manual }}{% else %}{{ p.intro }}{% if updated %} <span class="tiny">{{ p.updated_label }} {{ updated }}.</span>{% endif %}{% endif %}</p></section>
+    <section class="panel">
+      {% for r in results %}<div class="chartrow"><span>{{ r.name }}</span><div class="charttrack"><i style="width:{{ r.accuracy }}%"></i></div><b>{{ r.accuracy_text }}</b></div>
+      {% else %}<p class="muted">{{ p.empty_manual if source == 'manual' else p.empty_text }}</p>{% endfor %}
+    </section>
+  </main>
+
+  {% include '_footer.html' %}
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

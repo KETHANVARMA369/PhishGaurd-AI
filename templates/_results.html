@@ -1,0 +1,93 @@
+{% macro xai_col(title, subtitle, rows, note) %}
+<div class="xai-col">
+  <h3>{{ title }}</h3>
+  <p class="tiny">{{ subtitle }}</p>
+  {% if note == 'fallback' %}<div class="notice caution small">{{ title.split(' ')[0] }} could not run on this server, so a simpler "what changes if this value is replaced by a typical one" estimate is shown instead.</div>{% endif %}
+  {% for r in rows %}
+  <div class="drow" title="{{ r.name }}">
+    <div class="dlabel"><span>{{ r.label }}</span>{% if r.actual != '' %}<small>= {{ r.actual }}</small>{% endif %}{% if r.estimated %}<em class="chip est" title="Cannot be measured from a link; a typical training value was used">estimated</em>{% endif %}</div>
+    <div class="dtrack"><i class="{{ r.dir }}" style="width:{{ (r.pct / 2)|round(1) }}%"></i></div>
+    <b class="{{ r.dir }}">{{ '%+.3f'|format(r.value) }}</b>
+  </div>
+  {% else %}<p class="muted">No explanation available.</p>{% endfor %}
+</div>
+{% endmacro %}
+
+{% if prediction %}
+<section class="results" id="results">
+
+  <!-- 1. FINAL RESULT -->
+  <div class="panel result-card {{ prediction.kind }} binary-result">
+    <div>
+      <div class="eyebrow">FINAL RESULT · {{ 'URL SCAN' if mode == 'url' else 'FEATURE SCAN' }}</div>
+      <h2>{{ prediction.label }}</h2>
+      <p class="break">{{ identifier }}</p>
+      <div class="risk-meter" title="AI model phishing score"><span style="width:{{ (prediction.prob * 100)|round(1) }}%"></span></div>
+      <div class="metrics">
+        <div><strong>{{ (prediction.prob * 100)|round(1) }}%</strong><small>AI model phishing score{% if mode == 'url' %} (alone){% endif %}</small></div>
+        {% if prediction.basis == 'trusted_domain' %}<div><strong>Trusted</strong><small>Well-known domain</small></div>{% endif %}
+      </div>
+    </div>
+    <div class="result-icon">{{ '!' if prediction.kind == 'danger' else ('?' if prediction.kind == 'unknown' else '✓') }}</div>
+  </div>
+
+  <!-- 2. QUICK SUMMARY (always shown) -->
+  <div class="panel summary-card {{ summary.kind }}" id="summary">
+    <div class="eyebrow">QUICK SUMMARY</div>
+    <h2>{{ summary.headline }}</h2>
+    <p class="summary-reason">{{ summary.reason }}</p>
+    <ul class="why">{% for line in summary.reasons %}<li>{{ line }}</li>{% endfor %}</ul>
+    <p class="todo"><b>What to do:</b> {{ summary.action }}</p>
+  </div>
+
+  <!-- 3. LIME + SHAP (always shown) -->
+  <div class="panel xai-panel" id="xai">
+    <div class="sectionline"><div><div class="eyebrow">EXPLAINABLE AI</div><h2>Why the model gave this score</h2></div><span class="pill">LIME · SHAP</span></div>
+    <p class="xai-intro">Each bar is one of the model's {{ feature_names|length or 15 }} inputs.
+      <span class="legend phishing">Red: pushes toward phishing</span>
+      <span class="legend legit">Green: pushes toward legitimate</span>.
+      Longer bar = bigger influence.{% if xai.base_value is not none %} The average site in the reference data scores {{ (xai.base_value * 100)|round(1) }}%; this one scored {{ (prediction.raw_prob * 100)|round(1) }}%.{% endif %}</p>
+    {% if mode == 'url' %}<div class="notice caution small">A link alone reveals only 6 of the 15 inputs. The others (page links, domain age, traffic rank, Google index, page rank...) are filled with typical values and tagged <span class="chip est">estimated</span>, so treat those bars as "what the model assumed", not as facts about this site.</div>{% endif %}
+    {% if xai.warning %}<div class="notice caution small">{{ xai.warning }}</div>{% endif %}
+    {% if xai.error %}<div class="notice error small">{{ xai.error }}</div>{% endif %}
+    <div class="xai-grid">
+      {{ xai_col('LIME · local explanation', 'A small, simple model fitted around this exact input.', xai.lime_rows, xai.notes.get('lime')) }}
+      {{ xai_col('SHAP · feature attribution', 'Fair share of the score credited to each input.', xai.shap_rows, xai.notes.get('shap')) }}
+    </div>
+    <p class="tiny">Reference data: {{ xai.reference or 'n/a' }} · computed in {{ xai.seconds }}s · explains the AI model only, not the reputation checks.</p>
+  </div>
+
+  <!-- 4. OPTIONAL GROQ -->
+  {% if groq_report %}
+  <div class="panel groq-panel"><div class="sectionline"><div><div class="eyebrow">AI-WRITTEN EXPLANATION</div><h2>In other words…</h2></div><span class="pill">Groq · optional</span></div>
+    <p class="groq-text">{{ groq_report.text }}</p>
+    <p class="tiny">Groq only rephrases the result above; it does not check websites or change the verdict.</p>
+  </div>
+  {% endif %}
+
+  <!-- 5. NEXT STEPS -->
+  <div class="panel"><div class="eyebrow">RECOMMENDED NEXT STEPS</div><h2>What you should do</h2>
+    <ul class="advice">{% for tip in advice %}<li>{{ tip }}</li>{% endfor %}</ul>
+    <p class="fine">This is decision support; a website's legitimacy always needs independent verification.</p>
+  </div>
+
+  <!-- 6. DETAILS -->
+  <details class="panel details">
+    <summary>Technical details (data checks, reputation, model inputs)</summary>
+    {% if mode == 'url' %}
+      {% if trust %}<h3>Domain reputation</h3>
+        <p>{% if trust.trusted %}<span class="pill green">Well-known domain</span> {{ trust.domain }} ({{ trust.source }}).{% else %}<span class="pill">Not on the well-known list</span> {{ trust.domain }}. {{ trust.note }}{% endif %}</p>{% endif %}
+      <h3>Warning signs in the address</h3>
+      {% if flags %}<ul class="advice">{% for f in flags %}<li><span class="pill {{ 'red' if f.level == 'high' else '' }}">{{ f.level }}</span> {{ f.text }}</li>{% endfor %}</ul>{% else %}<p>None found.</p>{% endif %}
+    {% endif %}
+    {% if coverage %}<h3>Model input coverage</h3>
+      <p>{{ coverage.available }} of {{ coverage.total }} model inputs can be measured from the link text ({{ coverage.coverage }}%). The rest use typical training values.</p>{% endif %}
+    {% if reputation %}<h3>Threat-list check</h3><p>{{ reputation.status|replace('_',' ')|title }}. {{ reputation.detail }}{% if reputation.categories %} Threat types: {{ reputation.categories|join(', ') }}.{% endif %}</p>
+      <p class="tiny">A missing match is not proof of safety. When enabled, the URL text is shared with Google Safe Browsing.</p>{% endif %}
+    <h3>AI model</h3>
+    <p>Raw model score: {{ (prediction.raw_prob * 100)|round(2) }}% phishing ({{ prediction.model_says }}). Probability {{ 'is calibrated' if prediction.calibrated else 'is NOT calibrated (no models/probability_calibrator.joblib)' }}.</p>
+    <h3>Model inputs used</h3>
+    <div class="feature-chips">{% for f in feature_rows %}<span><b>{{ f.label }}</b> {{ f.value }}{% if f.estimated %} <em class="chip est">estimated</em>{% endif %}</span>{% endfor %}</div>
+  </details>
+</section>
+{% endif %}

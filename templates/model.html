@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="{{ site.meta.description }}">
+  <title>{{ site.pages.models.title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% include '_navbar.html' %}
+
+  <main class="shell">
+    {% with msgs = get_flashed_messages(with_categories=true) %}{% for category, message in msgs %}
+    <div class="notice {{ category }}" role="alert">{{ message }}</div>
+    {% endfor %}{% endwith %}
+    {% set p = site.pages.models %}
+
+    <section class="page-head">
+      <div class="eyebrow">{{ p.eyebrow }}</div>
+      <h1>{{ p.heading }}</h1>
+      <p>{% if source == 'manual' %}{{ p.intro_manual }}{% else %}{{ p.intro }} <code>models/{{ csv_name }}</code>. {{ p.intro_end }}{% if updated %} <span class="tiny">{{ p.updated_label }} {{ updated }}.</span>{% endif %}{% endif %}</p>
+    </section>
+    <section class="panel">
+      {% if results %}
+      <div class="table-scroll"><table>
+        <thead><tr><th>{{ p.model_column }}</th>{% for c in columns %}<th>{{ c }}</th>{% endfor %}</tr></thead>
+        <tbody>{% for r in results %}<tr><td>{{ r.name }}</td>{% for cell in r.cells %}<td><span class="pill">{{ cell }}</span></td>{% endfor %}</tr>{% endfor %}</tbody>
+      </table></div>
+      {% else %}<p class="muted">{{ p.empty_manual if source == 'manual' else p.empty_text }}</p>{% endif %}
+    </section>
+    <p><a href="{{ page_url('chart') }}">{{ p.chart_link }}</a></p>
+  </main>
+
+  {% include '_footer.html' %}
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

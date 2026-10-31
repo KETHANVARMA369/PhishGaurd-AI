@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="{{ site.meta.description }}">
+  <title>{{ site.pages.dashboard.title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% include '_navbar.html' %}
+
+  <main class="shell">
+    {% with msgs = get_flashed_messages(with_categories=true) %}{% for category, message in msgs %}
+    <div class="notice {{ category }}" role="alert">{{ message }}</div>
+    {% endfor %}{% endwith %}
+    {% set p = site.pages.dashboard %}
+
+    <section class="page-head">
+      <div class="eyebrow">{{ p.eyebrow }}</div>
+      <h1>{{ p.heading }} {{ session.get('user_name', p.default_name) }}</h1>
+      <p>{{ p.intro }}</p>
+    </section>
+    {% if not model_ready %}<div class="notice error">Models are not ready: {{ load_error }}</div>{% endif %}
+    <section class="three">
+      {% for t in p.tiles %}
+      <a class="panel tile" href="{{ page_url(t.page) }}"><div class="feature-icon">{{ t.icon }}</div><h3>{{ t.title }}</h3><p>{{ t.text }}</p><strong>{{ t.link }}</strong></a>
+      {% endfor %}
+    </section>
+    <section class="panel wide">
+      <h3>{{ p.model_title }}</h3>
+      <p>{{ p.model_text }}</p>
+      <a href="{{ page_url('models') }}">{{ p.model_link }}</a>
+    </section>
+  </main>
+
+  {% include '_footer.html' %}
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

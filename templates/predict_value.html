@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="{{ site.meta.description }}">
+  <title>{{ site.pages.feature_scan.title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% include '_navbar.html' %}
+
+  <main class="shell">
+    {% with msgs = get_flashed_messages(with_categories=true) %}{% for category, message in msgs %}
+    <div class="notice {{ category }}" role="alert">{{ message }}</div>
+    {% endfor %}{% endwith %}
+    {% set p = site.pages.feature_scan %}
+
+    <section class="page-head"><div class="eyebrow">{{ p.eyebrow }}</div><h1>{{ p.heading }}</h1><p>{{ p.intro }}</p></section>
+    <section class="panel">
+      <form method="post" data-loading="{{ p.loading_text }}">
+        <label>{{ p.name_label }}<input name="domain" maxlength="250" value="{{ request.form.get('domain', p.name_default) }}"></label>
+        <div class="example-row"><span class="tiny">{{ p.presets_label }}</span>
+          <button type="button" class="chip-btn" data-preset="legit">{{ p.preset_legit }}</button>
+          <button type="button" class="chip-btn" data-preset="phish">{{ p.preset_phish }}</button>
+          <button type="button" class="chip-btn" data-preset="default">{{ p.preset_default }}</button>
+          <span class="tiny">{{ p.presets_note }}</span>
+        </div>
+        {% for g in manual_groups %}
+        <fieldset class="fgroup"><legend>{{ g.title }}</legend><p class="tiny">{{ g.blurb }}</p>
+          <div class="form-grid">
+          {% for f in g.fields if f.name in manual_names %}
+            <label>{{ f.label }}
+              {% if f.kind == 'binary' %}
+              <select name="{{ f.name }}" data-default="{{ f.default }}">
+                {% set cur = request.form.get(f.name, f.default) %}
+                <option value="0" {% if cur in ('0','0.0','') %}selected{% endif %}>0 · indexed by Google</option>
+                <option value="1" {% if cur in ('1','1.0') %}selected{% endif %}>1 · not indexed</option>
+              </select>
+              {% else %}
+              <input type="number" step="{{ f.step }}" {% if f.min is defined %}min="{{ f.min }}"{% endif %} {% if f.max is defined %}max="{{ f.max }}"{% endif %} required name="{{ f.name }}" data-default="{{ f.default }}" value="{{ request.form.get(f.name, f.default) }}">
+              {% endif %}
+              <span class="hint">{{ f.help }}</span>
+            </label>
+          {% endfor %}
+          </div>
+        </fieldset>
+        {% endfor %}
+        <label class="tiny"><input type="checkbox" name="groq" value="1" {% if request.form.get("groq") %}checked{% endif %}> {{ p.groq_label }}</label>
+        <button class="btn" type="submit">{{ p.button }}</button>
+      </form>
+    </section>
+    {% if error %}<div class="notice error">{{ error }}</div>{% endif %}
+    {% include '_results.html' %}
+    <script>window.PHISH_PRESETS = {{ example_presets|tojson }};</script>
+  </main>
+
+  {% include '_footer.html' %}
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

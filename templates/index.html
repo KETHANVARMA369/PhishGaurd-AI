@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="{{ site.meta.description }}">
+  <title>{{ site.pages.home.title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% include '_navbar.html' %}
+
+  <main class="shell">
+    {% with msgs = get_flashed_messages(with_categories=true) %}{% for category, message in msgs %}
+    <div class="notice {{ category }}" role="alert">{{ message }}</div>
+    {% endfor %}{% endwith %}
+    {% set p = site.pages.home %}
+
+    <section class="hero">
+      <div>
+        <div class="eyebrow">{{ p.eyebrow }}</div>
+        <h1>{{ p.heading }} <span>{{ p.heading_accent }}</span></h1>
+        <p class="lead">{{ p.lead }}</p>
+        <div class="actions">
+          <a class="btn" href="{{ page_url('scan_url') if session.get('user_email') else page_url('register') }}">{{ p.primary_button }}</a>
+          {% if not session.get('user_email') %}<a class="btn ghost" href="{{ page_url('login') }}">{{ p.secondary_button }}</a>{% endif %}
+        </div>
+        <div class="fine">{{ p.fine_print }}</div>
+      </div>
+      <div class="hero-art">
+        <div class="orb">{{ p.hero_icon }}</div>
+        <div class="status-card"><span class="green-dot"></span><strong>{{ p.status_title }}</strong><small>{{ p.status_subtitle }}</small></div>
+      </div>
+    </section>
+    <section class="three">
+      {% for c in p.cards %}
+      <article class="panel"><div class="feature-icon">{{ c.icon }}</div><h3>{{ c.title }}</h3><p>{{ c.text }}</p></article>
+      {% endfor %}
+    </section>
+  </main>
+
+  {% include '_footer.html' %}
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

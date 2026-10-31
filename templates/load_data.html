@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="{{ site.meta.description }}">
+  <title>{{ site.pages.csv_upload.title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% include '_navbar.html' %}
+
+  <main class="shell">
+    {% with msgs = get_flashed_messages(with_categories=true) %}{% for category, message in msgs %}
+    <div class="notice {{ category }}" role="alert">{{ message }}</div>
+    {% endfor %}{% endwith %}
+    {% set p = site.pages.csv_upload %}
+
+    <section class="page-head"><h1>{{ p.heading }}</h1><p>{{ p.intro }}</p></section>
+    <section class="panel">
+      <form method="post" enctype="multipart/form-data" class="stack"><input type="file" name="file" accept=".csv" required><button class="btn">{{ p.button }}</button></form>
+      {% if preview %}{% include '_table.html' %}{% endif %}
+    </section>
+  </main>
+
+  {% include '_footer.html' %}
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

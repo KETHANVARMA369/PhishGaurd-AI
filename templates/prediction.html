@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="{{ site.meta.description }}">
+  <title>{{ site.pages.scan_url.title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% include '_navbar.html' %}
+
+  <main class="shell">
+    {% with msgs = get_flashed_messages(with_categories=true) %}{% for category, message in msgs %}
+    <div class="notice {{ category }}" role="alert">{{ message }}</div>
+    {% endfor %}{% endwith %}
+    {% set p = site.pages.scan_url %}
+
+    <section class="page-head"><div class="eyebrow">{{ p.eyebrow }}</div><h1>{{ p.heading }}</h1><p>{{ p.intro }}</p></section>
+    <section class="panel scan-card">
+      <form method="post" class="scan-form" data-loading="{{ p.loading_text }}">
+        <label for="url">{{ p.input_label }}</label>
+        <div class="input-button">
+          <input id="url" type="text" name="a" required maxlength="2048" autocomplete="off" placeholder="{{ p.placeholder }}" value="{{ request.form.get('a','') }}">
+          <button class="btn" type="submit">{{ p.button }}</button>
+        </div>
+        {% if p.show_examples and p.examples %}
+        <div class="example-row"><span class="tiny">{{ p.examples_label }}</span>
+          {% for e in p.examples %}<button type="button" class="chip-btn" data-fill="{{ e.url }}">{{ e.label }}</button>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <label class="tiny"><input type="checkbox" name="groq" value="1" {% if request.form.get("groq") %}checked{% endif %}> {{ p.groq_label }}</label>
+        <p class="tiny">{{ p.note }}</p>
+      </form>
+    </section>
+    {% if error %}<div class="notice error">{{ error }}</div>{% endif %}
+    {% include '_results.html' %}
+  </main>
+
+  {% include '_footer.html' %}
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

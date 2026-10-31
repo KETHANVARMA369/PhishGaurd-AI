@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="{{ site.meta.description }}">
+  <title>{{ site.pages.register.title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% include '_navbar.html' %}
+
+  <main class="shell">
+    {% with msgs = get_flashed_messages(with_categories=true) %}{% for category, message in msgs %}
+    <div class="notice {{ category }}" role="alert">{{ message }}</div>
+    {% endfor %}{% endwith %}
+    {% set p = site.pages.register %}
+
+    <section class="auth panel">
+      <div class="eyebrow">{{ p.eyebrow }}</div>
+      <h1>{{ p.heading }}</h1>
+      <p>{{ p.intro }}</p>
+      <form method="post" class="stack">
+        <label>{{ p.name_label }}<input required name="name" maxlength="50" autocomplete="name" placeholder="{{ p.name_placeholder }}"></label>
+        <label>{{ p.email_label }}<input required type="email" name="email" maxlength="100" autocomplete="email" placeholder="{{ p.email_placeholder }}"></label>
+        <label>{{ p.password_label }}<input required type="password" name="password" minlength="8" autocomplete="new-password"></label>
+        <label>{{ p.confirm_label }}<input required type="password" name="conformpassword" minlength="8" autocomplete="new-password"></label>
+        <button class="btn" type="submit">{{ p.button }}</button>
+      </form>
+      <p class="tiny">{{ p.switch_text }} <a href="{{ page_url('login') }}">{{ p.switch_link }}</a></p>
+    </section>
+  </main>
+
+  {% include '_footer.html' %}
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

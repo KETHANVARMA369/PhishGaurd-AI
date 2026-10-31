@@ -1,0 +1,308 @@
+{
+  "_help": "EDIT THIS FILE to change the navbar, brand, footer, page text, example links and the model-comparison table. Save the file and refresh the browser - no restart needed. Keep the JSON valid: text in double quotes, commas between items. See EDITING_GUIDE.md.",
+  "brand": {
+    "name": "PhishGuard",
+    "accent": "AI",
+    "logo": "◈"
+  },
+  "meta": {
+    "description": "Explainable phishing URL risk screening"
+  },
+  "nav": {
+    "_help": "Each item: label + page (a name from EDITING_GUIDE.md) OR url (http/https/mailto or /path). style: '' (plain link), 'outline' (bordered) or 'button'. Remove an item to hide it; add one to show it.",
+    "logged_in": [
+      {
+        "label": "Home",
+        "page": "home"
+      },
+      {
+        "label": "Scan URL",
+        "page": "scan_url"
+      },
+      {
+        "label": "Feature scan",
+        "page": "feature_scan"
+      },
+      {
+        "label": "Models",
+        "page": "models"
+      },
+      {
+        "label": "History",
+        "page": "history"
+      },
+      {
+        "label": "Logout",
+        "page": "logout",
+        "style": "outline"
+      }
+    ],
+    "logged_out": [
+      {
+        "label": "Home",
+        "page": "home"
+      },
+      {
+        "label": "Login",
+        "page": "login"
+      },
+      {
+        "label": "Get started",
+        "page": "register",
+        "style": "button"
+      }
+    ]
+  },
+  "footer": {
+    "text": "PhishGuard AI · Research demo · Predictions are probabilistic and are not security guarantees."
+  },
+  "models_page": {
+    "_help": "source: 'manual' = show the numbers typed in the 'manual' list below (edit them here), 'csv' = read them from models/<csv_file> written by the notebook. columns: any of Accuracy, F1, Precision, Recall, AUC. decimals: digits after the point (0-4). hide_models: names to leave out. sort: 'accuracy_desc' (best first) or 'as_listed' (keep the order you typed). Write values as percentages, e.g. 96.54.",
+    "source": "manual",
+    "columns": [
+      "Accuracy"
+    ],
+    "decimals": 2,
+    "sort": "accuracy_desc",
+    "hide_models": [],
+    "csv_file": "final_comparison.csv",
+    "manual": [
+      {
+        "name": "MSRA-BiLSTM-AFG (Novelty)",
+        "accuracy": 96.54,
+        "f1": 96.55,
+        "precision": 96.12,
+        "recall": 96.99,
+        "auc": 99.29
+      },
+      {
+        "name": "Random Forest",
+        "accuracy": 96.4,
+        "f1": 96.41,
+        "precision": 95.98,
+        "recall": 96.85,
+        "auc": 99.27
+      },
+      {
+        "name": "XGBoost",
+        "accuracy": 96.36,
+        "f1": 96.37,
+        "precision": 96.04,
+        "recall": 96.71,
+        "auc": 99.17
+      },
+      {
+        "name": "ExtraTrees",
+        "accuracy": 95.91,
+        "f1": 95.92,
+        "precision": 95.49,
+        "recall": 96.36,
+        "auc": 99.16
+      },
+      {
+        "name": "CNN-BiLSTM",
+        "accuracy": 95.07,
+        "f1": 95.06,
+        "precision": 95.22,
+        "recall": 94.89,
+        "auc": 98.65
+      },
+      {
+        "name": "Bi-LSTM",
+        "accuracy": 94.19,
+        "f1": 94.21,
+        "precision": 93.88,
+        "recall": 94.54,
+        "auc": 98.08
+      },
+      {
+        "name": "CNN",
+        "accuracy": 92.51,
+        "f1": 92.44,
+        "precision": 93.36,
+        "recall": 91.53,
+        "auc": 97.34
+      }
+    ]
+  },
+  "pages": {
+    "home": {
+      "title": "PhishGuard AI · Explainable phishing detection",
+      "eyebrow": "EXPLAINABLE PHISHING RISK DETECTION",
+      "heading": "Know the risk",
+      "heading_accent": "before you click.",
+      "lead": "Screen suspicious links with an ensemble of Random Forest, XGBoost, and MSRA-BiLSTM-AFG. Understand each result with LIME, SHAP and practical next steps.",
+      "primary_button": "Start a URL scan →",
+      "secondary_button": "Sign in",
+      "fine_print": "No URL content is fetched: lexical URL signals are analysed locally.",
+      "hero_icon": "◈",
+      "status_title": "Explainable analysis",
+      "status_subtitle": "Fusion prediction · LIME · SHAP",
+      "cards": [
+        {
+          "icon": "◎",
+          "title": "URL inspection",
+          "text": "Paste a link and extract structural and lexical security features."
+        },
+        {
+          "icon": "≋",
+          "title": "ML + deep fusion",
+          "text": "Multiple trained models contribute to the final phishing probability."
+        },
+        {
+          "icon": "◈",
+          "title": "Clear explanations",
+          "text": "See feature contributions and advice matched to the prediction."
+        }
+      ]
+    },
+    "login": {
+      "title": "Sign in · PhishGuard",
+      "eyebrow": "WELCOME BACK",
+      "heading": "Sign in",
+      "intro": "Access your private scans and model explanations.",
+      "email_label": "Email address",
+      "email_placeholder": "you@example.com",
+      "password_label": "Password",
+      "password_placeholder": "Your password",
+      "button": "Sign in →",
+      "switch_text": "New here?",
+      "switch_link": "Create an account"
+    },
+    "register": {
+      "title": "Create account · PhishGuard",
+      "eyebrow": "GET STARTED",
+      "heading": "Create an account",
+      "intro": "Scan URLs and track your analyses.",
+      "name_label": "Full name",
+      "name_placeholder": "Your name",
+      "email_label": "Email address",
+      "email_placeholder": "you@example.com",
+      "password_label": "Password",
+      "confirm_label": "Confirm password",
+      "button": "Create account →",
+      "switch_text": "Already registered?",
+      "switch_link": "Sign in"
+    },
+    "dashboard": {
+      "title": "Dashboard · PhishGuard",
+      "eyebrow": "YOUR WORKSPACE",
+      "heading": "Welcome,",
+      "default_name": "Researcher",
+      "intro": "Choose how you want to review a website.",
+      "tiles": [
+        {
+          "icon": "↗",
+          "title": "Scan a URL",
+          "text": "Paste a website address to check phishing probability and explanations.",
+          "link": "Scan now →",
+          "page": "scan_url"
+        },
+        {
+          "icon": "▦",
+          "title": "Manual feature scan",
+          "text": "Enter the 15 features the model was trained on and get a verdict with LIME + SHAP.",
+          "link": "Enter features →",
+          "page": "feature_scan"
+        },
+        {
+          "icon": "◷",
+          "title": "Prediction history",
+          "text": "View your recent risk assessments.",
+          "link": "View history →",
+          "page": "history"
+        }
+      ],
+      "model_title": "Research model",
+      "model_text": "MSRA-BiLSTM-AFG with Random Forest, XGBoost and logistic meta-fusion. Feature order is loaded from the notebook's saved bundle.",
+      "model_link": "View measured model comparison →"
+    },
+    "scan_url": {
+      "title": "Scan URL · PhishGuard",
+      "eyebrow": "URL THREAT ASSESSMENT",
+      "heading": "Scan a suspicious link",
+      "intro": "Get a clear verdict, a plain-English summary, LIME + SHAP explanations and next steps.",
+      "input_label": "Website URL",
+      "placeholder": "https://example.com/login",
+      "button": "Analyze URL →",
+      "loading_text": "Checking URL and computing LIME + SHAP…",
+      "show_examples": true,
+      "examples_label": "Try:",
+      "examples": [
+        {
+          "label": "grok.com",
+          "url": "https://grok.com/"
+        },
+        {
+          "label": "wikipedia.org",
+          "url": "https://www.wikipedia.org/"
+        },
+        {
+          "label": "secure-paypal-update.tk/login/verify",
+          "url": "http://secure-paypal-update.tk/login/verify"
+        }
+      ],
+      "groq_label": "Also add an AI-written explanation with Groq (optional)",
+      "note": "The app never visits the website. Every scan includes the AI model, a domain-reputation check, address warning signs, and LIME + SHAP explanations. If a Google Safe Browsing key is configured, the URL text is shared with Google."
+    },
+    "feature_scan": {
+      "title": "Feature scan · PhishGuard",
+      "eyebrow": "ADVANCED ANALYSIS",
+      "heading": "Predict from the 15 trained features",
+      "intro": "The model was trained on exactly these 15 inputs. Enter the values produced by the same feature-extraction procedure used for the dataset. Hover or read the grey hint under each field.",
+      "name_label": "Reference name (for history)",
+      "name_default": "Manual input",
+      "button": "Run prediction →",
+      "loading_text": "Predicting and computing LIME + SHAP…",
+      "presets_label": "Fill with:",
+      "preset_legit": "Legitimate-looking example",
+      "preset_phish": "Phishing-looking example",
+      "preset_default": "Typical (median) values",
+      "presets_note": "Examples are illustrative values, not real sites.",
+      "groq_label": "Also add an AI-written explanation with Groq (optional)"
+    },
+    "models": {
+      "title": "Model comparison · PhishGuard",
+      "eyebrow": "MODEL EVALUATION",
+      "heading": "Performance comparison",
+      "intro": "Loaded from your notebook's",
+      "intro_end": "No scores are invented.",
+      "updated_label": "CSV last updated:",
+      "model_column": "Model",
+      "empty_text": "No model comparison CSV found yet. Export final_comparison.csv from your notebook into the models folder.",
+      "chart_link": "View accuracy chart →",
+      "intro_manual": "Accuracy of each trained model.",
+      "empty_manual": "No models are listed. Add them under models_page > manual in site_config.json."
+    },
+    "chart": {
+      "title": "Accuracy chart · PhishGuard",
+      "heading": "Accuracy overview",
+      "intro": "Evaluation results loaded from the notebook's comparison export.",
+      "updated_label": "CSV last updated:",
+      "empty_text": "No comparison CSV found. Save models/final_comparison.csv from the notebook.",
+      "intro_manual": "Accuracy of each trained model, shown as a chart.",
+      "empty_manual": "No models are listed. Add them under models_page > manual in site_config.json."
+    },
+    "history": {
+      "title": "History · PhishGuard",
+      "eyebrow": "ACTIVITY",
+      "heading": "Prediction history",
+      "intro": "Your 200 most recent URL and feature-based assessments.",
+      "empty_title": "No scans yet",
+      "empty_text": "Run a URL scan to start building your history.",
+      "empty_button": "Scan URL →"
+    },
+    "csv_upload": {
+      "title": "CSV preview · PhishGuard",
+      "heading": "CSV preview",
+      "intro": "Upload a CSV for inspection. Uploading does not retrain your saved model.",
+      "button": "Upload CSV"
+    },
+    "csv_view": {
+      "title": "Dataset preview · PhishGuard",
+      "heading": "Dataset preview",
+      "empty_text": "No CSV uploaded yet.",
+      "empty_link": "Upload CSV →"
+    }
+  }
+}
