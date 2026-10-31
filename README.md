@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 > **Update (15-feature model):** see `CHANGES_THIS_UPDATE.md`. URL verdicts now combine the AI score, domain reputation and
 > address warning signs (the older "always Uncertain" text below no longer applies); LIME/SHAP and a plain-English summary
 > appear for every scan; the manual page uses exactly the 15 trained features.
@@ -59,3 +60,6 @@ This produces `models/probability_calibrator.joblib` using isotonic regression. 
 ## Security caveats
 
 Registration has password hashing; older passwords created by the original backend can still be checked in the compatibility branch. Migrate legacy plaintext passwords for production, disable debug, set HTTPS/session-cookie protections, add CSRF and login throttling, handle credentials via environment variables, and restrict file uploads. Do not trust arbitrary third-party model or pickle files. History stores the **model-only** label and probability, not the hybrid conclusion; update your schema before using history for downstream clinical/security decisions.
+=======
+# PhishGaurd-AI
+>>>>>>> dffa87815dae237feeaacaf0fb63662dc2df1a29
